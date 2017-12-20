@@ -1,6 +1,19 @@
 #!/usr/bin/python3
 # coding: utf-8
 
+import re 
+import argparse
+
+parser = argparse.ArgumentParser(description="Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion")
+parser.add_argument("sequence", help="Nucleotide sequence in a embl format")
+parser.add_argument("-e", "--enzyme", help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
+parser.add_argument("-o", "--outputfile", help="The outputfile to use other than default (*_output.cusp/restrict)")
+parser.add_argument("-a", "--alphabetic_sort", action="store_true", help="Sort the result by alphabetique order of the enzymes name")
+parser.add_argument("-r", "--reverse_sort", action="store_true", help="Reverse the order of result")
+parser.add_argument("-s", "--size", help="Minimum recognition site length")
+args = parser.parse_args()
+
+
 nb_SQ = taille_SQ = GC = GC1 = GC2 = GC3 = pGC = pGC1 = pGC2 = pGC3 = 0
 
 code = {'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A',
@@ -88,4 +101,12 @@ def parseEMBL(emblfile):
 
     dictembl[emblfile] = seq
 
+if __name__ == '__main__':
+
+    if args.enzyme != None:  
+        pass # faire restrict
+    elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != None:
+        print("Error, those options (alphabetic_sort,reverse_sort and size) are for restrict not cusp")
+    else:
+        pass # cusp
 
