@@ -71,7 +71,7 @@ AA_nbr = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0,
 'S': 0, 'T': 0, 'V': 0, 'W': 0, 'Y': 0, 
 '*': 0}
 
-codon_fraction, codon_frequence, dict_seq, dict_enz = {}, {}, {}, {}
+codon_fraction, codon_frequence, dict_seq, dict_enz, dict_result = {}, {}, {}, {}, {}
 
 #########################################################################################
 #PARSERS
@@ -140,7 +140,7 @@ def parse_FASTA(fasta_file):
     f.close()
 
 ##############################################################################################
-#Restrict
+## Restrict
 ##############################################################################################
 
 def reverse_dna(sequence):
@@ -163,7 +163,7 @@ def restrict_search(dict_enz, sequence, size_restriction_site=4):
     '''recherche les site de restriction dans la sequence donnee'''
 
     # Initiation valeurs
-    lrestult =[]
+    lresult =[]
     strand = "+"
     lseq = []
     
@@ -186,12 +186,12 @@ def restrict_search(dict_enz, sequence, size_restriction_site=4):
 
                 # Formatage des resultats
                 for match in all_match:
-                    lrestult.append([match.start(), match.end(), key, enz[0], strand])
+                    lresult.append([match.start(), match.end(), key, enz[0], strand])
         strand = "-"
 
-    return lrestult
+    return lresult
 
-def sortrestrict(lrestult, reverse, tri_alphabetique):
+def sortrestrict(lresult, reverse, tri_alphabetique):
     ''' Tri les enzymes par position de hit croissante par défaut, peut-être triee par ordre alphabetique et en ordre decroissant '''
 
     if tri_alphabetique == True:
@@ -199,33 +199,35 @@ def sortrestrict(lrestult, reverse, tri_alphabetique):
     else:
         tri_alphabetique = 1
 
-    result_sorted = sorted(lrestult, key = operator.itemgetter(tri_alphabetique), reverse = reverse)
+    result_sorted = sorted(lresult, key = operator.itemgetter(tri_alphabetique), reverse = reverse)
     return result_sorted
 
-def count_hit(lrestult):
+def count_hit(lresult):
     ''' Verifie le nombre de hit trouve par restrict.py '''
 
     compteur = 0
-    for hit in lrestult:
+    for hit in lresult:
         compteur += 1
     return compteur
 
-def enregistrement_result(result_sorted, outputfile, nom_seq):
+def save_restrict(dict_result, outputfile):
     ''' Enregistre le resultat dans un fichier '''
 
     fichier = open(outputfile, 'w')
-    nb_hit = count_hit(result_sorted)
-
-    fichier.write("#"*40 + "\n")
-    fichier.write("# Name sequence : " + str(nom_seq) +"\n")
-    fichier.write("# nb_hit : " + str(nb_hit) + "\n")
-    fichier.write("#"*40 + "\n" + "Start  End  Enzyme  Restriction site  Strand" + "\n")
-    for hit in result_sorted:
-        fichier.write(str(hit[0]) + ",  " + str(hit[1]) + ",    " + str(hit[2]) + ",    " + str(hit[3].upper()) + ",    " + hit[4] + "\n")
+    for key in dict_result:
+        lresult = dict_result[key]
+        
+        nb_hit = count_hit(lresult)
+        fichier.write("\n" + "#"*40 + "\n")
+        fichier.write("# Name sequence : " + str(key) +"\n")
+        fichier.write("# nb_hit : " + str(nb_hit) + "\n")
+        fichier.write("#"*40 + "\n" + "Start  End  Enzyme  Restriction site  Strand" + "\n")
+        for hit in result_sorted:
+            fichier.write(str(hit[0]) + ",  " + str(hit[1]) + ",    " + str(hit[2]) + ",    " + str(hit[3].upper()) + ",    " + hit[4] + "\n")
 
 
 ##############################################################################################
-#Traitement
+## Cusp
 ##############################################################################################
 
 def codante(seq):
@@ -313,20 +315,23 @@ if __name__ == '__main__':
 
     if args.enzyme != None:
 
+        lresult = []
         parse_Emboss(args.enzyme) # Creation dict_enz
         for key in dict_seq: # Prend les clés qui sont inconnu une à une
+            print(key)
             seq = dict_seq[key] # S'en sert pour obtenir la sequence
-            result = restrict_search(dict_enz, seq, args.size) # Cherche les site de restriction
+            result = restrict_search(dict_enz, seq, args.size) # Cherche les sites de restriction
             result_sorted = sortrestrict(result, args.reverse_sort, args.alphabetic_sort) # Les tris
+            dict_result[key] = result_sorted
 
-            if args.outputfile != None:
-                enregistrement_result(result_sorted, args.outputfile, key)
-            else:
-                out = key + ".restrict"
-                enregistrement_result(result_sorted, out, key)
+        if args.outputfile != None:
+            save_restrict(dict_result, args.outputfile)
+        else:
+            out = key + ".restrict"
+            save_restrict(dict_result, out)
 
 
-    elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != None:
+    elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != 4:
         print("Error, those options (alphabetic_sort,reverse_sort and size) are for restrict not cusp")
     else:
         for seq in dict_seq:
