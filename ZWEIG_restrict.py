@@ -6,15 +6,6 @@
 import re
 import sys
 import operator
-import argparse
-
-parser = argparse.ArgumentParser(description="Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion")
-parser.add_argument("sequence", help="Nucleotide sequence in a embl format")
-parser.add_argument("-e", "-enzyme", help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
-parser.add_argument("-a", "-alphabetic_sort", help="Sort the result by alphabetique order of the enzymes name")
-parser.add_argument("-r", "-reverse_sort", action="store_true", help="Reverse the order of result")
-parser.add_argument("-s", help="Minimum recognition site length")
-args = parser.parse_args()
 
 restrict_help = "\
 Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion  \n\
@@ -277,14 +268,4 @@ def test_restrict(result_sorted, dictembl):
             compteur_nt = 0
 
 if __name__ == '__main__':
-
-    print(args.enzyme)
-    if args.enzyme != None:
-        print("faire restrict")
-    else:
-        print("faire cusp")
-
-    reverse = False
-    tri_alphabetique = 1
-    embossfile = args.enzymes
-    emblfile = args.sequence
+    main()
