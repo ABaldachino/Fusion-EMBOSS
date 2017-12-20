@@ -139,6 +139,20 @@ def parse_FASTA(fasta_file):
         isseq = False
     f.close()
 
+def parseMultiFASTA(fasta):
+    ''' Exrait les séquences nucléotidiques d'un fichier (multi)FASTA et les stocke dans un dictionnaire global dict_seq '''
+
+    file = open(fasta, "r")
+
+    for line in file:
+        if line[0] == ">":
+            dict_seq[line[1:-1]] = ""
+            seq_actuel = line[1:-1]
+        elif line == "\n":
+            pass
+        else:
+            dict_seq[seq_actuel] += line
+
 ##############################################################################################
 ## Restrict
 ##############################################################################################
@@ -218,10 +232,10 @@ def save_restrict(dict_result, outputfile):
         lresult = dict_result[key]
         
         nb_hit = count_hit(lresult)
-        fichier.write("\n" + "#"*40 + "\n")
+        fichier.write("\n" + "#"*60 + "\n")
         fichier.write("# Name sequence : " + str(key) +"\n")
         fichier.write("# nb_hit : " + str(nb_hit) + "\n")
-        fichier.write("#"*40 + "\n" + "Start  End  Enzyme  Restriction site  Strand" + "\n")
+        fichier.write("#"*60 + "\n" + "Start  End  Enzyme  Restriction site  Strand" + "\n")
         for hit in result_sorted:
             fichier.write(str(hit[0]) + ",  " + str(hit[1]) + ",    " + str(hit[2]) + ",    " + str(hit[3].upper()) + ",    " + hit[4] + "\n")
 
@@ -309,7 +323,7 @@ if __name__ == '__main__':
 
     for seq in args.sequence:
         if re.search("[^.]\.[fa|fasta]", seq) != None:
-            parse_FASTA(seq)
+            parseMultiFASTA(seq)
         elif re.search("[^.]\.embl", seq) != None:
             parse_EMBL(seq)
 
@@ -327,7 +341,7 @@ if __name__ == '__main__':
         if args.outputfile != None:
             save_restrict(dict_result, args.outputfile)
         else:
-            out = key + ".restrict"
+            out = args.sequence[0] + ".restrict"
             save_restrict(dict_result, out)
 
 
