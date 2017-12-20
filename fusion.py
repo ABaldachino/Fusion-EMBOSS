@@ -64,6 +64,13 @@ codon_nbr = {'GCA': 0, 'GCC': 0, 'GCG': 0, 'GCT': 0,
 'TAC': 0, 'TAT': 0,
 'TAA': 0, 'TAG': 0, 'TGA': 0}
 
+
+AA_nbr = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0,
+'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, 
+'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 
+'S': 0, 'T': 0, 'V': 0, 'W': 0, 'Y': 0, 
+'*': 0}
+
 codon_fraction, codon_frequence, dict_seq, dict_enz = {}, {}, {}, {}
 
 #########################################################################################
@@ -74,7 +81,6 @@ def parse_Emboss(emboss_file):
     ''' Exrait les sites de restrictions et les stocke dans un dictionnaire global dict_enz'''
 
     fichier = open(emboss_file, 'r')
-
     ## Place dans un dictionnaire chaque enzyme (key) avec le site, la first cut 5', 3',
     # et la seconde cut 5', et 3'
     for line in fichier:
@@ -105,30 +111,32 @@ def parse_EMBL(embl_file):
 def parse_FASTA(fasta_file):
     ''' Exrait les séquences nucléotidiques d'un fichier (multi)FASTA et les stocke dans un dictionnaire global dict_seq'''
 
-    f=open(fasta_file,"r")
-    isseq=False
+    f = open(fasta_file,"r")
+    isseq = False
     for line in f:
     #Pour chaque ligne chercher si elle commence par un ">"
-        if line[0] == ">" and isseq==False:
-            isseq=True
-            #name=
-            seq=''
+        if line[0] == ">" and isseq == False:
+            isseq = True
+            id = re.search("^>[^|]|([^|])", line)
+            name = id.group(1)
+            seq = ''
             #Et prendre toutes les lignes suivantes commençant par une base ATCG.
         elif line[0] in 'ATCG' and isseq == True:
-            seq=seq+line
-            seq=seq.strip('\n')
+            seq = seq+line
+            seq = seq.strip('\n')
             # Si on enchaîne sur une nouvelle séquence, lancer la recherche de séquence codante et le comptage puis réinitialiser SQ
         elif line[0] == ">" and isseq == True:
             dict_seq[name] = seq.upper()
-            #name=
-            seq=''
+            id = re.search("^>[^|]|([^|])", line)
+            name = id.group(1)
+            seq = ''
             # Si on tombe sur une ligne vide alors traiter la séquence et réinitialiser isseq
         elif line[0] == "" and isseq == True:
             dict_seq[name] = seq.upper()
-            isseq=False
+            isseq = False
     #Si on arrive à la fin du fichier et que l'on a une séquence en attente, traiter la séquence.
     if isseq == True:
-        isseq=False
+        isseq = False
     f.close()
 
 ##############################################################################################
@@ -224,14 +232,14 @@ def codante(seq):
     ''' Retourne une séquence codante à partir d'une séquence donnée '''
 
     #Recherche d'un ATG
-    posATG=seq.find('ATG')
-    seq=seq[posATG:]
+    posATG = seq.find('ATG')
+    seq = seq[posATG:]
     #Recherche d'un stop sur le même cadre de lecture
-    stops=['TAA','TAG','TGA']
-    for ntp in range(0,len(SQ),3):
-        codon=seq[ntp:ntp+3]
+    stops = ['TAA','TAG','TGA']
+    for ntp in range(0, len(SQ), 3):
+        codon = seq[ntp: ntp + 3]
         if codon in stops:
-            seq=seq[:ntp+3]
+            seq = seq[: ntp + 3]
             break
     return seq
 
@@ -242,43 +250,58 @@ def comptage(seq):
     nb_SQ = nb_SQ + 1
     taille_SQ = taille_SQ + len(SQ)
     for ntp in SQ:
-        if ntp=='G' or ntp=='C':
+        if ntp == 'G' or ntp == 'C':
             GC += 1
-    for ntp in range(0,len(seq),3):
-        codon=seq[ntp:ntp+3]
-        if codon[0]=='G' or codon[0]=='C':
+    for ntp in range(0, len(seq), 3):
+        codon = seq[ntp: ntp + 3]
+        if codon[0] == 'G' or codon[0] == 'C':
             GC1 += 1
-        if codon[1]=='G' or codon[1]=='C':
+        if codon[1] == 'G' or codon[1] == 'C':
             GC2 += 1
-        if codon[2]=='G' or codon[2]=='C':
+        if codon[2] == 'G' or codon[2] == 'C':
             GC3 += 1
-        codon_nbr[codon]=codon_nbr[codon]+1
-        AA_nbr[code[codon]]=AA_nbr[code[codon]]+1
+        codon_nbr[codon] = codon_nbr[codon]+1
+        AA_nbr[code[codon]] = AA_nbr[code[codon]]+1
 
 def usage():
     ''' Calcule l'usage du code et les pourcentages de GC '''
 
     # Calcul des pourcentages en GC.
     global nb_SQ, taille_SQ, GC, GC1, GC2, GC3, pGC, pGC1, pGC2, pGC3
-    pGC=(GC*100)/taille_SQ
-    pGC1=(GC1*100)/(taille_SQ/3)
-    pGC2=(GC2*100)/(taille_SQ/3)
-    pGC3=(GC3*100)/(taille_SQ/3)
+    pGC = (GC * 100) / taille_SQ
+    pGC1 = (GC1 * 100) / (taille_SQ / 3)
+    pGC2 = (GC2 * 100) / (taille_SQ / 3)
+    pGC3 = (GC3 * 100) / (taille_SQ / 3)
     # Calcul de l'usage du code
     for codon in codon_nbr:
         if AA_nbr[code[codon]] != 0:
-            codon_fraction[codon]=codon_nbr[codon]/AA_nbr[code[codon]]
+            codon_fraction[codon] = codon_nbr[codon] / AA_nbr[code[codon]]
         else:
-            codon_fraction[codon]=0
-    rapport=1000/(taille_SQ/3)
+            codon_fraction[codon] = 0
+    rapport = 1000 / (taille_SQ / 3)
     for codon in codon_nbr:
-        codon_fqc[codon]=codon_nbr[codon]*rapport
+        codon_frequence[codon] = codon_nbr[codon] * rapport
     for codon in codon_nbr:
-        type(codon_nbr[codon])
-        codon_nbr[codon]=int(codon_nbr[codon])
-        type(codon_nbr[codon])
+        codon_nbr[codon] = int(codon_nbr[codon])
 
-
+def impression_cusp():
+    fo=open("output.cusp",'w')
+    fo.write('#CdsCount:%i' %nb_SQ + '\n')
+    fo.write('\n')
+    fo.write("#Coding GC %.2f" % pGC+"%\n")
+    fo.write("#1st letter GC %.2f" % pGC1+"%\n")
+    fo.write("#2nd letter GC %.2f" % pGC2+"%\n")
+    fo.write("#3rd letter GC %.2f" % pGC3+"%\n")
+    fo.write('\n')
+    fo.write('#Codon AA Fraction Frequency Number\n')
+    for codon in code:
+        fo.write("%s" %(codon)+"    ")
+        fo.write("%s  " %(code[codon]))
+        fo.write( "% 8.3f" %(codon_fraction[codon])+" ")
+        fo.write( "% 9.3f" %(codon_frequence[codon])+" ")
+        fo.write( "% 6i" %(codon_nbr[codon]))
+        fo.write("\n")
+    fo.close()
 
 if __name__ == '__main__':
 
@@ -306,5 +329,9 @@ if __name__ == '__main__':
     elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != None:
         print("Error, those options (alphabetic_sort,reverse_sort and size) are for restrict not cusp")
     else:
-        pass # cusp
+        for seq in dict_seq:
+            seq_codante = codante(dict_seq[seq])
+            comptage(seq_codante)
+        usage()
+        impression_cusp()
 
