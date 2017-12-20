@@ -1,19 +1,6 @@
 #!/usr/bin/python3
 # coding: utf-8
 
-import re 
-import argparse
-
-parser = argparse.ArgumentParser(description="Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion")
-parser.add_argument("sequence", nargs="+", help="Nucleotide sequence in a embl format")
-parser.add_argument("-e", "--enzyme", help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
-parser.add_argument("-o", "--outputfile", help="The outputfile to use other than default (*_output.cusp/restrict)")
-parser.add_argument("-a", "--alphabetic_sort", action="store_true", help="Sort the result by alphabetique order of the enzymes name")
-parser.add_argument("-r", "--reverse_sort", action="store_true", help="Reverse the order of result")
-parser.add_argument("-s", "--size", help="Minimum recognition site length")
-args = parser.parse_args()
-
-
 nb_SQ = taille_SQ = GC = GC1 = GC2 = GC3 = pGC = pGC1 = pGC2 = pGC3 = 0
 
 code = {'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A',
@@ -60,15 +47,15 @@ codon_nbr = {'GCA': 0, 'GCC': 0, 'GCG': 0, 'GCT': 0,
 'TAC': 0, 'TAT': 0,
 'TAA': 0, 'TAG': 0, 'TGA': 0}
 
-codon_fraction = codon_frequence = dictseq = {}
+codon_fraction = codon_frequence = dictembl = {}
 
 #########################################################################################
 #PARSERS
 #########################################################################################
 
-def parse_Emboss(emboss_file):
-    ''' Exrait les sites de restrictions et les stocke dans un dictionnaire global dictenz'''
-
+def parseEmboss(emboss_file):
+    ''' Prend un fichier emboss et retourne un dictionnaire avec pour keys les noms des enzyme de restriction et pour
+    valeurs une liste contenant le site de restriction, et les positions de coupe '''
     fichier = open(emboss_file, 'r')
     dictenz = {}
 
@@ -81,10 +68,11 @@ def parse_Emboss(emboss_file):
             dictenz[coupe[0]] = [coupe[1], coupe[5], coupe[6], coupe[7], coupe[8]]
     return dictenz
 
-def parse_EMBL(embl_file):
-    ''' Exrait la séquence nucléotidique d'un fichier EMBL et la stocke dans un dictionnaire global dictseq'''
+def parseEMBL(emblfile):
+    ''' Lis un fichier embl et place le nom du ficher, comme clef,
+     et la séquence nuléotidique, comme item, dans un dictionnaire global '''
 
-    fichier = open(embl_file, "r")
+    fichier = open(emblfile, "r")
     isseq = False
     seq = ''
 
@@ -98,108 +86,6 @@ def parse_EMBL(embl_file):
             seq += (re.sub(' *[0-9]*\n$', '', line)).replace(" ", "")
             # seq = seq.replace(" ", "")
 
-    dictseq[embl_file] = seq.upper()
-
-def parse_FASTA(fasta_file):
-    ''' Exrait les séquences nucléotidiques d'un fichier (multi)FASTA et les stocke dans un dictionnaire global dictseq'''
-
-    f=open(fasta_file,"r")
-    isseq=False
-    for line in f:
-    #Pour chaque ligne chercher si elle commence par un ">"
-        if line[0] == ">" and isseq==False:
-            isseq=True
-            #name=
-            seq=''
-            #Et prendre toutes les lignes suivantes commençant par une base ATCG.
-        elif line[0] in 'ATCG' and isseq == True:
-            seq=seq+line
-            seq=seq.strip('\n')
-            # Si on enchaîne sur une nouvelle séquence, lancer la recherche de séquence codante et le comptage puis réinitialiser SQ
-        elif line[0] == ">" and isseq == True:
-            dictseq[name] = seq.upper()
-            #name=
-            seq=''
-            # Si on tombe sur une ligne vide alors traiter la séquence et réinitialiser isseq
-        elif line[0] == "" and isseq == True:
-            dictseq[name] = seq.upper()
-            isseq=False
-    #Si on arrive à la fin du fichier et que l'on a une séquence en attente, traiter la séquence.
-    if isseq == True:
-        isseq=False
-    f.close()
-
-##############################################################################################
-#Traitement
-##############################################################################################
-
-def codante(seq):
-    ''' Retourne une séquence codante à partir d'une séquence donnée '''
-
-    #Recherche d'un ATG
-    posATG=seq.find('ATG')
-    seq=seq[posATG:]
-    #Recherche d'un stop sur le même cadre de lecture
-    stops=['TAA','TAG','TGA']
-    for ntp in range(0,len(SQ),3):
-        codon=seq[ntp:ntp+3]
-        if codon in stops:
-            seq=seq[:ntp+3]
-            break
-    return seq
-
-def comptage(seq):
-    ''' Compte différents paramètres dans la séquence donnée'''
-
-    global nb_SQ, taille_SQ, GC, GC1, GC2, GC3
-    nb_SQ = nb_SQ + 1
-    taille_SQ = taille_SQ + len(SQ)
-    for ntp in SQ:
-        if ntp=='G' or ntp=='C':
-            GC += 1
-    for ntp in range(0,len(seq),3):
-        codon=seq[ntp:ntp+3]
-        if codon[0]=='G' or codon[0]=='C':
-            GC1 += 1
-        if codon[1]=='G' or codon[1]=='C':
-            GC2 += 1
-        if codon[2]=='G' or codon[2]=='C':
-            GC3 += 1
-        codon_nbr[codon]=codon_nbr[codon]+1
-        AA_nbr[code[codon]]=AA_nbr[code[codon]]+1
-
-def usage():
-    ''' Calcule l'usage du code et les pourcentages de GC '''
-
-    # Calcul des pourcentages en GC.
-    global nb_SQ, taille_SQ, GC, GC1, GC2, GC3, pGC, pGC1, pGC2, pGC3
-    pGC=(GC*100)/taille_SQ
-    pGC1=(GC1*100)/(taille_SQ/3)
-    pGC2=(GC2*100)/(taille_SQ/3)
-    pGC3=(GC3*100)/(taille_SQ/3)
-    # Calcul de l'usage du code
-    for codon in codon_nbr:
-        if AA_nbr[code[codon]] != 0:
-            codon_fraction[codon]=codon_nbr[codon]/AA_nbr[code[codon]]
-        else:
-            codon_fraction[codon]=0
-    rapport=1000/(taille_SQ/3)
-    for codon in codon_nbr:
-        codon_fqc[codon]=codon_nbr[codon]*rapport
-    for codon in codon_nbr:
-        type(codon_nbr[codon])
-        codon_nbr[codon]=int(codon_nbr[codon])
-        type(codon_nbr[codon])
-
-
-
-if __name__ == '__main__':
-
-    if args.enzyme != None:  
-        pass # faire restrict
-    elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != None:
-        print("Error, those options (alphabetic_sort,reverse_sort and size) are for restrict not cusp")
-    else:
-        pass # cusp
+    dictembl[emblfile] = seq
 
 
