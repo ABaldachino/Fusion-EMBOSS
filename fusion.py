@@ -103,6 +103,12 @@ def parseEMBL(emblfile):
 
 if __name__ == '__main__':
 
+    for seq in args.sequence:
+        if re.search("[^.]\.[fa|fasta]", seq) != None:
+            parseFASTA(seq)
+        elif re.search("[^.]\.embl", seq) != None:
+            parseEMBL(seq)
+    
     if args.enzyme != None:  
         pass # faire restrict
     elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != None:
