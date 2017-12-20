@@ -67,8 +67,8 @@ codon_fraction = codon_frequence = dictseq = {}
 #########################################################################################
 
 def parse_Emboss(emboss_file):
-    ''' Prend un fichier emboss et retourne un dictionnaire avec pour keys les noms des enzyme de restriction et pour
-    valeurs une liste contenant le site de restriction, et les positions de coupe '''
+    ''' Exrait les sites de restrictions et les stocke dans un dictionnaire global dictenz'''
+
     fichier = open(emboss_file, 'r')
     dictenz = {}
 
@@ -82,8 +82,7 @@ def parse_Emboss(emboss_file):
     return dictenz
 
 def parse_EMBL(embl_file):
-    ''' Lis un fichier embl et place le nom du ficher, comme clef,
-     et la séquence nuléotidique, comme item, dans un dictionnaire global '''
+    ''' Exrait la séquence nucléotidique d'un fichier EMBL et la stocke dans un dictionnaire global dictseq'''
 
     fichier = open(embl_file, "r")
     isseq = False
@@ -99,16 +98,18 @@ def parse_EMBL(embl_file):
             seq += (re.sub(' *[0-9]*\n$', '', line)).replace(" ", "")
             # seq = seq.replace(" ", "")
 
-    dictseq[emblfile] = seq.upper()
+    dictseq[embl_file] = seq.upper()
 
 def parse_FASTA(fasta_file):
+    ''' Exrait les séquences nucléotidiques d'un fichier (multi)FASTA et les stocke dans un dictionnaire global dictseq'''
+
     f=open(fasta_file,"r")
     isseq=False
     for line in f:
     #Pour chaque ligne chercher si elle commence par un ">"
         if line[0] == ">" and isseq==False:
             isseq=True
-            name=
+            #name=
             seq=''
             #Et prendre toutes les lignes suivantes commençant par une base ATCG.
         elif line[0] in 'ATCG' and isseq == True:
@@ -117,7 +118,7 @@ def parse_FASTA(fasta_file):
             # Si on enchaîne sur une nouvelle séquence, lancer la recherche de séquence codante et le comptage puis réinitialiser SQ
         elif line[0] == ">" and isseq == True:
             dictseq[name] = seq.upper()
-            name=
+            #name=
             seq=''
             # Si on tombe sur une ligne vide alors traiter la séquence et réinitialiser isseq
         elif line[0] == "" and isseq == True:
