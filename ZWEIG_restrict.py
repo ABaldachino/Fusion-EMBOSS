@@ -22,8 +22,8 @@ Restrict report position of restriction site on a DNA sequence, by printing it b
     -s                  Minimum recognition site length"
 
 
-equ = {'A':'A', 'T':'T', 'G':'G', 'C':'C', 'R':'AG', 'M':'AC', 'W':'AT', 'Y':'CT', 'S':'CG', 'K':'GT', 'V':'ACG', \
-       'H':'ACT', 'D':'AGT', 'B':'CGT', 'N':'AGCT'}
+IUPAC_dna = {'A':'A', 'T':'T', 'G':'G', 'C':'C', 'R':'AG', 'M':'AC', 'W':'AT', 'Y':'CT', 'S':'CG', 'K':'GT', 'V':'ACG', \
+            'H':'ACT', 'D':'AGT', 'B':'CGT', 'N':'AGCT'}
 
 def parseEmboss(emboss_file):
     ''' Prend un fichier emboss et retourne un dictionnaire avec pour keys les noms des enzyme de restriction et pour
@@ -110,24 +110,35 @@ def reverse_dna(sequence):
     return sequence_reverse
 
 
-def restrictsearch(dictenz, dictembl, size_restriction_site):
+def restrictsearch(dictenz, dictembl, size_restriction_site=4):
     '''recherche les site de restriction dans la sequence donnee'''
 
     ## Initiation valeurs
-    compteur_seq = 0
-    compteur_nt = 0
     lrestult =[]
-    hit = True
     strand = "+"
-    lsequence = []
+    lseq = []
     
-    lsequence.append(dictembl['SQ'].upper()) # Attribue la sequence dans une liste
-    lsequence.append(reverse_dna(lsequence[0])) # Ajoute le brin complementaire à la liste
+    # prend sequence et en fait une liste contenant le 5'3' et 3'5'
+    lseq.append(dictembl['SQ'].upper()) # Attribue la sequence dans une liste
+    lseq.append(reverse_dna(lseq[0])) # Ajoute le brin complementaire à la liste
 
-    for sequence in lsequence:
+    for seq in lseq:
         for key in dictenz: # Prend les enzymes de restriction une à une
             enz = dictenz[key]
-            
+            if len(enz[0]) >= size_restriction_site: # Verifie que la taille du site de restriction est suffisante
+                exp_re = ""
+
+                # Transformation de pattern à une expression regulière
+                for ntp in enz[0].upper():
+                    exp_re += IUPAC_dna[ntp]
+
+                # Compilation et recherche
+                all_match = re.finditer(exp_re, seq)
+
+                # Affichage des résultats
+                for match in all_match:
+                    lrestult.append([match.start(), match.end(), key, enz[0], strand])
+            '''
             if len(enz[0]) >= int(size_restriction_site): # Ne prend pas les enzymes de restriction avec un site de restriction inferieur ou egal a size_restriction
                 while compteur_seq < len(sequence) - len(enz[0]): # Boucle pour scanner la sequence
 
@@ -148,6 +159,7 @@ def restrictsearch(dictenz, dictembl, size_restriction_site):
                     compteur_nt = 0
                     compteur_seq += 1
                 compteur_seq = 0
+            '''
         strand = "-"
 
     return lrestult
