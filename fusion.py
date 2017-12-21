@@ -20,55 +20,63 @@ nb_SQ, taille_SQ, GC, GC1, GC2, GC3, pGC, pGC1, pGC2, pGC3 = 0, 0, 0, 0, 0, 0, 0
 IUPAC_dna = {'A':'A', 'T':'T', 'G':'G', 'C':'C', 'R':'AG', 'M':'AC', 'W':'AT', 'Y':'CT', 'S':'CG', 'K':'GT', 'V':'ACG', \
             'H':'ACT', 'D':'AGT', 'B':'CGT', 'N':'AGCT'}
 
-code = {'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A',
-'TGC': 'C', 'TGT': 'C',
-'GAC': 'D', 'GAT': 'D',
-'GAA': 'E', 'GAG': 'E',
-'TTC': 'F', 'TTT': 'F',
-'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G',
-'CAC': 'H', 'CAT': 'H',
-'ATA': 'I', 'ATC': 'I', 'ATT': 'I',
-'AAA': 'K', 'AAG': 'K',
-'CTA': 'L', 'CTC': 'L', 'CTG': 'L', 'CTT': 'L', 'TTA': 'L', 'TTG': 'L',
-'ATG': 'M',
-'AAC': 'N', 'AAT': 'N',
-'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P',
-'CAA': 'Q', 'CAG': 'Q',
-'AGA': 'R', 'AGG': 'R', 'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R',
-'AGC': 'S', 'AGT': 'S', 'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S',
-'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T',
-'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V',
-'TGG': 'W',
-'TAC': 'Y', 'TAT': 'Y',
+ordre_code=['GCA', 'GCC', 'GCG', 'GCT', 'TGC', 'TGT', 'GAC', 'GAT', \
+'GAA', 'GAG', 'TTC', 'TTT', 'GGA', 'GGC', 'GGG', 'GGT', 'CAC', 'CAT', \
+'ATA', 'ATC', 'ATT', 'AAA', 'AAG', 'CTA', 'CTC', 'CTG', 'CTT', 'TTA', \
+'TTG', 'ATG', 'AAC', 'AAT', 'CCA', 'CCC', 'CCG', 'CCT', 'CAA', 'CAG', \
+'AGA', 'AGG', 'CGA', 'CGC', 'CGG', 'CGT', 'AGC', 'AGT', 'TCA', 'TCC', \
+'TCG', 'TCT', 'ACA', 'ACC', 'ACG', 'ACT', 'GTA', 'GTC', 'GTG', 'GTT', \
+'TGG', 'TAC', 'TAT', 'TAA', 'TAG', 'TGA']
+
+code = {'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A', \
+'TGC': 'C', 'TGT': 'C', \
+'GAC': 'D', 'GAT': 'D', \
+'GAA': 'E', 'GAG': 'E', \
+'TTC': 'F', 'TTT': 'F', \
+'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G', \
+'CAC': 'H', 'CAT': 'H', \
+'ATA': 'I', 'ATC': 'I', 'ATT': 'I', \
+'AAA': 'K', 'AAG': 'K', \
+'CTA': 'L', 'CTC': 'L', 'CTG': 'L', 'CTT': 'L', 'TTA': 'L', 'TTG': 'L', \
+'ATG': 'M', \
+'AAC': 'N', 'AAT': 'N', \
+'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P', \
+'CAA': 'Q', 'CAG': 'Q', \
+'AGA': 'R', 'AGG': 'R', 'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R', \
+'AGC': 'S', 'AGT': 'S', 'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S', \
+'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T', \
+'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V', \
+'TGG': 'W', \
+'TAC': 'Y', 'TAT': 'Y', \
 'TAA': '*', 'TAG': '*', 'TGA': '*'}
 
-codon_nbr = {'GCA': 0, 'GCC': 0, 'GCG': 0, 'GCT': 0,
-'TGC': 0, 'TGT': 0,
-'GAC': 0, 'GAT': 0,
-'GAA': 0, 'GAG': 0,
-'TTC': 0, 'TTT': 0,
-'GGA': 0, 'GGC': 0, 'GGG': 0, 'GGT': 0,
-'CAC': 0, 'CAT': 0,
-'ATA': 0, 'ATC': 0, 'ATT': 0,
-'AAA': 0, 'AAG': 0,
-'CTA': 0, 'CTC': 0, 'CTG': 0, 'CTT': 0, 'TTA': 0, 'TTG': 0,
-'ATG': 0,
-'AAC': 0, 'AAT': 0,
-'CCA': 0, 'CCC': 0, 'CCG': 0, 'CCT': 0,
-'CAA': 0, 'CAG': 0,
-'AGA': 0, 'AGG': 0, 'CGA': 0, 'CGC': 0, 'CGG': 0, 'CGT': 0,
-'AGC': 0, 'AGT': 0, 'TCA': 0, 'TCC': 0, 'TCG': 0, 'TCT': 0,
-'ACA': 0, 'ACC': 0, 'ACG': 0, 'ACT': 0,
-'GTA': 0, 'GTC': 0, 'GTG': 0, 'GTT': 0,
-'TGG': 0,
-'TAC': 0, 'TAT': 0,
+codon_nbr = {'GCA': 0, 'GCC': 0, 'GCG': 0, 'GCT': 0, \
+'TGC': 0, 'TGT': 0, \
+'GAC': 0, 'GAT': 0, \
+'GAA': 0, 'GAG': 0, \
+'TTC': 0, 'TTT': 0, \
+'GGA': 0, 'GGC': 0, 'GGG': 0, 'GGT': 0, \
+'CAC': 0, 'CAT': 0, \
+'ATA': 0, 'ATC': 0, 'ATT': 0, \
+'AAA': 0, 'AAG': 0, \
+'CTA': 0, 'CTC': 0, 'CTG': 0, 'CTT': 0, 'TTA': 0, 'TTG': 0, \
+'ATG': 0, \
+'AAC': 0, 'AAT': 0, \
+'CCA': 0, 'CCC': 0, 'CCG': 0, 'CCT': 0, \
+'CAA': 0, 'CAG': 0, \
+'AGA': 0, 'AGG': 0, 'CGA': 0, 'CGC': 0, 'CGG': 0, 'CGT': 0, \
+'AGC': 0, 'AGT': 0, 'TCA': 0, 'TCC': 0, 'TCG': 0, 'TCT': 0, \
+'ACA': 0, 'ACC': 0, 'ACG': 0, 'ACT': 0, \
+'GTA': 0, 'GTC': 0, 'GTG': 0, 'GTT': 0, \
+'TGG': 0, \
+'TAC': 0, 'TAT': 0, \
 'TAA': 0, 'TAG': 0, 'TGA': 0}
 
 
-AA_nbr = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0,
-'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, 
-'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, 
-'S': 0, 'T': 0, 'V': 0, 'W': 0, 'Y': 0, 
+AA_nbr = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, \
+'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, \
+'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, \
+'S': 0, 'T': 0, 'V': 0, 'W': 0, 'Y': 0, \
 '*': 0}
 
 codon_fraction, codon_frequence, dict_seq, dict_enz = {}, {}, {}, {}
@@ -114,29 +122,28 @@ def parse_FASTA(fasta_file):
     f = open(fasta_file,"r")
     isseq = False
     for line in f:
-    #Pour chaque ligne chercher si elle commence par un ">"
+        #Pour chaque ligne chercher si elle commence par un ">"
         if line[0] == ">" and isseq == False:
             isseq = True
-            id = re.search("^>[^|]|([^|])", line)
-            name = id.group(1)
+            name = line
             seq = ''
             #Et prendre toutes les lignes suivantes commençant par une base ATCG.
         elif line[0] in 'ATCG' and isseq == True:
-            seq = seq+line
+            seq = seq + line
             seq = seq.strip('\n')
             # Si on enchaîne sur une nouvelle séquence, lancer la recherche de séquence codante et le comptage puis réinitialiser SQ
         elif line[0] == ">" and isseq == True:
             dict_seq[name] = seq.upper()
-            id = re.search("^>[^|]|([^|])", line)
-            name = id.group(1)
+            name = line
             seq = ''
             # Si on tombe sur une ligne vide alors traiter la séquence et réinitialiser isseq
         elif line[0] == "" and isseq == True:
             dict_seq[name] = seq.upper()
             isseq = False
-    #Si on arrive à la fin du fichier et que l'on a une séquence en attente, traiter la séquence.
     if isseq == True:
+        dict_seq[name] = seq.upper()
         isseq = False
+            #Si on arrive à la fin du fichier et que l'on a une séquence en attente, traiter la séquence.
     f.close()
 
 ##############################################################################################
@@ -236,7 +243,7 @@ def codante(seq):
     seq = seq[posATG:]
     #Recherche d'un stop sur le même cadre de lecture
     stops = ['TAA','TAG','TGA']
-    for ntp in range(0, len(SQ), 3):
+    for ntp in range(0, len(seq), 3):
         codon = seq[ntp: ntp + 3]
         if codon in stops:
             seq = seq[: ntp + 3]
@@ -248,8 +255,8 @@ def comptage(seq):
 
     global nb_SQ, taille_SQ, GC, GC1, GC2, GC3
     nb_SQ = nb_SQ + 1
-    taille_SQ = taille_SQ + len(SQ)
-    for ntp in SQ:
+    taille_SQ = taille_SQ + len(seq)
+    for ntp in seq:
         if ntp == 'G' or ntp == 'C':
             GC += 1
     for ntp in range(0, len(seq), 3):
@@ -285,6 +292,7 @@ def usage():
         codon_nbr[codon] = int(codon_nbr[codon])
 
 def impression_cusp():
+    ''' Présente les résultats sous la forme d'un fichier struturé .cusp '''
     fo=open("output.cusp",'w')
     fo.write('#CdsCount:%i' %nb_SQ + '\n')
     fo.write('\n')
@@ -294,7 +302,7 @@ def impression_cusp():
     fo.write("#3rd letter GC %.2f" % pGC3+"%\n")
     fo.write('\n')
     fo.write('#Codon AA Fraction Frequency Number\n')
-    for codon in code:
+    for codon in ordre_code:
         fo.write("%s" %(codon)+"    ")
         fo.write("%s  " %(code[codon]))
         fo.write( "% 8.3f" %(codon_fraction[codon])+" ")
@@ -326,7 +334,7 @@ if __name__ == '__main__':
                 enregistrement_result(result_sorted, out, key)
 
 
-    elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != None:
+    elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != 4:
         print("Error, those options (alphabetic_sort,reverse_sort and size) are for restrict not cusp")
     else:
         for seq in dict_seq:
