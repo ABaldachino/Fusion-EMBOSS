@@ -158,7 +158,7 @@ def parseMultiFASTA(fasta):
         elif line == "\n":
             pass
         else:
-            dict_seq[seq_actuel] += line
+            dict_seq[seq_actuel] += line[:-1]
 
 ##############################################################################################
 ## Restrict
@@ -352,9 +352,9 @@ if __name__ == '__main__':
             out = args.sequence[0] + ".restrict"
             save_restrict(dict_result, out)
 
-
     elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != 4:
         print("Error, those options (alphabetic_sort,reverse_sort and size) are for restrict not cusp")
+    
     else:
         for seq in dict_seq:
             seq_codante = codante(dict_seq[seq])
