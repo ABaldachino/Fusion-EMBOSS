@@ -6,12 +6,12 @@ import argparse
 import operator
 
 parser = argparse.ArgumentParser(description="Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion")
-parser.add_argument("sequence", nargs="+", help="Nucleotide sequence in a embl format")
-parser.add_argument("-e", "--enzyme", help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
+parser.add_argument("sequence", nargs="+", type=str, help="Nucleotide sequence in a embl format")
+parser.add_argument("-e", "--enzyme", type=str, help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
 parser.add_argument("-o", "--outputfile", help="The outputfile to use other than default (*_output.cusp/restrict)")
 parser.add_argument("-a", "--alphabetic_sort", action="store_true", help="Sort the result by alphabetique order of the enzymes name")
 parser.add_argument("-r", "--reverse_sort", action="store_true", help="Reverse the order of result")
-parser.add_argument("-s", "--size", default=4, help="Minimum recognition site length (default=4)")
+parser.add_argument("-s", "--size", default=4, type=int, help="Minimum recognition site length (default=4)")
 args = parser.parse_args()
 
 
@@ -187,6 +187,10 @@ def restrict_search(dict_enz, sequence, size_restriction_site=4):
     lresult =[]
     strand = "+"
     lseq = []
+
+    # Lève un attribute error si size n'est pas >= à 1 
+    if size_restriction_site < 1:
+        raise AttributeError
     
     # prend sequence et en fait une liste contenant le 5'3' et 3'5'
     lseq.append(sequence.upper()) # Attribue la sequence dans une liste
