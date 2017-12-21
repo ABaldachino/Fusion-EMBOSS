@@ -329,7 +329,6 @@ if __name__ == '__main__':
 
     if args.enzyme != None:
 
-        lresult = []
         parse_Emboss(args.enzyme) # Creation dict_enz
         for key in dict_seq: # Prend les clés qui sont inconnu une à une
             print(key)
@@ -338,6 +337,7 @@ if __name__ == '__main__':
             result_sorted = sortrestrict(result, args.reverse_sort, args.alphabetic_sort) # Les tris
             dict_result[key] = result_sorted
 
+        ## Enregistrement des resultats
         if args.outputfile != None:
             save_restrict(dict_result, args.outputfile)
         else:
