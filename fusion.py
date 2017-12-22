@@ -221,7 +221,13 @@ def save_restrict(dict_result, outputfile):
 ##############################################################################################
 
 def codante(seq):
-    ''' Retourne une séquence codante à partir d'une séquence donnée '''
+    ''' 
+    Return an ORF from the DNA sequence given == 
+    Retourne une séquence codante à partir d'une séquence donnée ?
+
+    :parm seq: A DNA sequence
+    :type seq: string
+    '''
 
     #Recherche d'un ATG
     posATG = seq.find('ATG')
@@ -277,7 +283,12 @@ def usage():
         codon_nbr[codon] = int(codon_nbr[codon])
 
 def impression_cusp(outputfile):
-    ''' Présente les résultats sous la forme d'un fichier struturé .cusp '''
+    ''' 
+    Save the result of cusp in a table in the outpufile
+
+    :parm outputfile: where save the file
+    :type outputfile: string
+    '''
     fo=open(outputfile,'w')
     fo.write('#CdsCount:%i' %nb_SQ + '\n')
     fo.write('\n')
