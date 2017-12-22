@@ -229,27 +229,44 @@ def codante(seq):
     :type seq: string
     '''
 
-    #Recherche d'un ATG
+    # Searches for an ATG
+    # Recherche d'un ATG
     posATG = seq.find('ATG')
     seq = seq[posATG:]
-    #Recherche d'un stop sur le même cadre de lecture
     stops = ['TAA','TAG','TGA']
+    # Searches for a STOP in the same reading frame.
+    # Recherche d'un stop sur le même cadre de lecture.
     for ntp in range(0, len(seq), 3):
         codon = seq[ntp: ntp + 3]
         if codon in stops:
             seq = seq[: ntp + 3]
-            break
+            #If found one , return an ORF.
+            #Si trouve alors return seq tronquée en 5' et 3'.
+            return seq
+    # If not return an non ended sequence truncated in 5'.
+    # Sinon retourne seq tronquée en 5' sans stop.
     return seq
 
 def comptage(seq):
-    ''' Compte différents paramètres dans la séquence donnée'''
+    '''Counts the different parameters in the given sequence.
+    Compte différents paramètres dans la séquence donnée.'''
 
     global nb_SQ, taille_SQ, GC, GC1, GC2, GC3
+    # Ajoute 1 au nombre de séquences analysées.
+    # Add 1 to the numbre of treated sequences.
     nb_SQ = nb_SQ + 1
+    # Sum the length of the sequence with the others'.
+    # Ajoute la taille de la séquence à la taille totale des séquences.
     taille_SQ = taille_SQ + len(seq)
+    # Count the total GC in the sequence.
+    # Compte le nombre de GC total dans la séquence.
     for ntp in seq:
         if ntp == 'G' or ntp == 'C':
             GC += 1
+    # Count how many codons present a GC
+    # And it's position in the triplet.
+    # Compte le nombre de codons comportant un GC 
+    # en position 1, 2 et/ou 3.
     for ntp in range(0, len(seq), 3):
         codon = seq[ntp: ntp + 3]
         if codon[0] == 'G' or codon[0] == 'C':
@@ -258,24 +275,35 @@ def comptage(seq):
             GC2 += 1
         if codon[2] == 'G' or codon[2] == 'C':
             GC3 += 1
+        #Dénombre les différents codons.
         codon_nbr[codon] = codon_nbr[codon]+1
+        #Et l'acide aminé correspondant à chaque codon.
         AA_nbr[code[codon]] = AA_nbr[code[codon]]+1
 
 def usage():
-    ''' Calcule l'usage du code et les pourcentages de GC '''
+    '''Calculate the Codon usage and percentages in GC.
+    Calcule l'usage du code et les pourcentages de GC '''
 
     # Calcul des pourcentages en GC.
+    # Calculation of GC percentages.
     global nb_SQ, taille_SQ, GC, GC1, GC2, GC3, pGC, pGC1, pGC2, pGC3
     pGC = (GC * 100) / taille_SQ
     pGC1 = (GC1 * 100) / (taille_SQ / 3)
     pGC2 = (GC2 * 100) / (taille_SQ / 3)
     pGC3 = (GC3 * 100) / (taille_SQ / 3)
+    # Codon usage determination
     # Calcul de l'usage du code
     for codon in codon_nbr:
+        # Give the percentage of codon used in function of the AA. 
+        # Donne la représentation de chaque codon en fonction de 
+        # l'acide aminé qu'il code.
         if AA_nbr[code[codon]] != 0:
             codon_fraction[codon] = codon_nbr[codon] / AA_nbr[code[codon]]
         else:
             codon_fraction[codon] = 0
+    # Give the frequence a codon is used in the sum of ORFs found.
+    # Calcul la fréquence d'utilisation d'un codon par rapport à la
+    # somme des tailles des séquences données.
     rapport = 1000 / (taille_SQ / 3)
     for codon in codon_nbr:
         codon_frequence[codon] = codon_nbr[codon] * rapport
@@ -284,19 +312,27 @@ def usage():
 
 def impression_cusp(outputfile):
     ''' 
-    Save the result of cusp in a table in the outpufile
+    Save the result of cusp in a table in the outputfile
 
     :parm outputfile: where save the file
     :type outputfile: string
     '''
+    # Creation of an output file.
+    # Création du fichier de sortie.
     fo=open(outputfile,'w')
+    # Number of treated sequences.
+    # Nombre de séquences traitées.
     fo.write('#CdsCount:%i' %nb_SQ + '\n')
     fo.write('\n')
+    # GC percentages.
+    # Différents pourcentages en GC.
     fo.write("#Coding GC %.2f" % pGC+"%\n")
     fo.write("#1st letter GC %.2f" % pGC1+"%\n")
     fo.write("#2nd letter GC %.2f" % pGC2+"%\n")
     fo.write("#3rd letter GC %.2f" % pGC3+"%\n")
     fo.write('\n')
+    # Codon usage parameters presentation into table.
+    # Présentation en tableau des paramètres de l'usage du code.
     fo.write('#Codon AA Fraction Frequency Number\n')
     for codon in ordre_code:
         fo.write("%s" %(codon)+"    ")
@@ -306,6 +342,10 @@ def impression_cusp(outputfile):
         fo.write( "% 6i" %(codon_nbr[codon]))
         fo.write("\n")
     fo.close()
+
+#####################################################################
+## MAIN
+#####################################################################
 
 if __name__ == '__main__':
 
