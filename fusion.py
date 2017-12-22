@@ -6,7 +6,6 @@ import argparse
 import operator
 
 
-
 #########################################################################################
 ## PARSERS
 #########################################################################################
@@ -20,7 +19,6 @@ def parse_Emboss(emboss_file):
     :parm emboss_file: name of the file to read
     :type emboss_file: string
     :return: None
-    :rtype: Nonetype
     '''
 
     fichier = open(emboss_file, 'r')
@@ -40,7 +38,6 @@ def parse_EMBL(embl_file):
     :parm embl_file: name of the file to read
     :type embl_file: string
     :return: None
-    :rtype: Nonetype
     '''
 
     fichier = open(embl_file, "r")
@@ -67,7 +64,6 @@ def parse_FASTA(fasta):
     :parm fasta: name of the file to read
     :type fasta: string
     :return: None
-    :rtype: Nonetype
     '''
 
     file = open(fasta, "r")
@@ -205,7 +201,6 @@ def save_restrict(dict_result, outputfile):
     :parm outputfile: Where save the result
     :type outputfile: string
     :return: None
-    :rtype: NoneType
     '''
 
     fichier = open(outputfile, 'w')
