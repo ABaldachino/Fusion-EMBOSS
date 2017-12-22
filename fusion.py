@@ -5,88 +5,23 @@ import re
 import argparse
 import operator
 
-parser = argparse.ArgumentParser(description="Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion")
-parser.add_argument("sequence", nargs="+", type=str, help="Nucleotide sequence in a embl format")
-parser.add_argument("-e", "--enzyme", type=str, help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
-parser.add_argument("-o", "--outputfile", help="The outputfile to use other than default (*_output.cusp/restrict)")
-parser.add_argument("-a", "--alphabetic_sort", action="store_true", help="Sort the result by alphabetique order of the enzymes name")
-parser.add_argument("-r", "--reverse_sort", action="store_true", help="Reverse the order of result")
-parser.add_argument("-s", "--size", default=4, type=int, help="Minimum recognition site length (default=4)")
-args = parser.parse_args()
 
-
-nb_SQ, taille_SQ, GC, GC1, GC2, GC3, pGC, pGC1, pGC2, pGC3 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-
-IUPAC_dna = {'A':'A', 'T':'T', 'G':'G', 'C':'C', 'R':'AG', 'M':'AC', 'W':'AT', 'Y':'CT', 'S':'CG', 'K':'GT', 'V':'ACG', \
-            'H':'ACT', 'D':'AGT', 'B':'CGT', 'N':'AGCT'}
-
-ordre_code=['GCA', 'GCC', 'GCG', 'GCT', 'TGC', 'TGT', 'GAC', 'GAT', \
-'GAA', 'GAG', 'TTC', 'TTT', 'GGA', 'GGC', 'GGG', 'GGT', 'CAC', 'CAT', \
-'ATA', 'ATC', 'ATT', 'AAA', 'AAG', 'CTA', 'CTC', 'CTG', 'CTT', 'TTA', \
-'TTG', 'ATG', 'AAC', 'AAT', 'CCA', 'CCC', 'CCG', 'CCT', 'CAA', 'CAG', \
-'AGA', 'AGG', 'CGA', 'CGC', 'CGG', 'CGT', 'AGC', 'AGT', 'TCA', 'TCC', \
-'TCG', 'TCT', 'ACA', 'ACC', 'ACG', 'ACT', 'GTA', 'GTC', 'GTG', 'GTT', \
-'TGG', 'TAC', 'TAT', 'TAA', 'TAG', 'TGA']
-
-code = {'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A', \
-'TGC': 'C', 'TGT': 'C', \
-'GAC': 'D', 'GAT': 'D', \
-'GAA': 'E', 'GAG': 'E', \
-'TTC': 'F', 'TTT': 'F', \
-'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G', \
-'CAC': 'H', 'CAT': 'H', \
-'ATA': 'I', 'ATC': 'I', 'ATT': 'I', \
-'AAA': 'K', 'AAG': 'K', \
-'CTA': 'L', 'CTC': 'L', 'CTG': 'L', 'CTT': 'L', 'TTA': 'L', 'TTG': 'L', \
-'ATG': 'M', \
-'AAC': 'N', 'AAT': 'N', \
-'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P', \
-'CAA': 'Q', 'CAG': 'Q', \
-'AGA': 'R', 'AGG': 'R', 'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R', \
-'AGC': 'S', 'AGT': 'S', 'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S', \
-'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T', \
-'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V', \
-'TGG': 'W', \
-'TAC': 'Y', 'TAT': 'Y', \
-'TAA': '*', 'TAG': '*', 'TGA': '*'}
-
-codon_nbr = {'GCA': 0, 'GCC': 0, 'GCG': 0, 'GCT': 0, \
-'TGC': 0, 'TGT': 0, \
-'GAC': 0, 'GAT': 0, \
-'GAA': 0, 'GAG': 0, \
-'TTC': 0, 'TTT': 0, \
-'GGA': 0, 'GGC': 0, 'GGG': 0, 'GGT': 0, \
-'CAC': 0, 'CAT': 0, \
-'ATA': 0, 'ATC': 0, 'ATT': 0, \
-'AAA': 0, 'AAG': 0, \
-'CTA': 0, 'CTC': 0, 'CTG': 0, 'CTT': 0, 'TTA': 0, 'TTG': 0, \
-'ATG': 0, \
-'AAC': 0, 'AAT': 0, \
-'CCA': 0, 'CCC': 0, 'CCG': 0, 'CCT': 0, \
-'CAA': 0, 'CAG': 0, \
-'AGA': 0, 'AGG': 0, 'CGA': 0, 'CGC': 0, 'CGG': 0, 'CGT': 0, \
-'AGC': 0, 'AGT': 0, 'TCA': 0, 'TCC': 0, 'TCG': 0, 'TCT': 0, \
-'ACA': 0, 'ACC': 0, 'ACG': 0, 'ACT': 0, \
-'GTA': 0, 'GTC': 0, 'GTG': 0, 'GTT': 0, \
-'TGG': 0, \
-'TAC': 0, 'TAT': 0, \
-'TAA': 0, 'TAG': 0, 'TGA': 0}
-
-
-AA_nbr = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, \
-'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, \
-'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, \
-'S': 0, 'T': 0, 'V': 0, 'W': 0, 'Y': 0, \
-'*': 0}
-
-codon_fraction, codon_frequence, dict_seq, dict_enz, dict_result = {}, {}, {}, {}, {}
 
 #########################################################################################
-#PARSERS
+## PARSERS
 #########################################################################################
 
 def parse_Emboss(emboss_file):
-    ''' Exrait les sites de restrictions et les stocke dans un dictionnaire global dict_enz'''
+    ''' 
+    Read a emboss file and stock the information about restriction enzyme in a 
+    global dictionary with name of enzyme as key and a list of characteristics 
+    as values.
+
+    :parm emboss_file: name of the file to read
+    :type emboss_file: string
+    :return: None
+    :rtype: Nonetype
+    '''
 
     fichier = open(emboss_file, 'r')
     ## Place dans un dictionnaire chaque enzyme (key) avec le site, la first cut 5', 3',
@@ -94,11 +29,19 @@ def parse_Emboss(emboss_file):
     for line in fichier:
         if line[0] != "#":  # Ne prend pas en compte les commentaires
             coupe = line.split("\t")    # Decoupe le str en une liste
-            coupe [8] = coupe[8].replace("\n", "") # retire le \n present
+            coupe[8] = coupe[8].replace("\n", "") # retire le \n present
             dict_enz[coupe[0]] = [coupe[1], coupe[5], coupe[6], coupe[7], coupe[8]]
 
 def parse_EMBL(embl_file):
-    ''' Exrait la séquence nucléotidique d'un fichier EMBL et la stocke dans un dictionnaire global dict_seq'''
+    ''' 
+    Read a embl file, extract the DNA sequence and stock it in a global dictionary 
+    with it's id as key and the sequence as value.
+
+    :parm embl_file: name of the file to read
+    :type embl_file: string
+    :return: None
+    :rtype: Nonetype
+    '''
 
     fichier = open(embl_file, "r")
     isseq = False
@@ -116,38 +59,16 @@ def parse_EMBL(embl_file):
 
     dict_seq[embl_file] = seq.upper()
 
-def parse_FASTA(fasta_file):
-    ''' Exrait les séquences nucléotidiques d'un fichier (multi)FASTA et les stocke dans un dictionnaire global dict_seq'''
+def parse_FASTA(fasta):
+    ''' 
+    Read a fasta file, extract the DNA sequence and stock it in a global dictionary 
+    with it's id as key and the sequence as value.
 
-    f = open(fasta_file,"r")
-    isseq = False
-    for line in f:
-        #Pour chaque ligne chercher si elle commence par un ">"
-        if line[0] == ">" and isseq == False:
-            isseq = True
-            name = line
-            seq = ''
-            #Et prendre toutes les lignes suivantes commençant par une base ATCG.
-        elif line[0] in 'ATCG' and isseq == True:
-            seq = seq + line
-            seq = seq.strip('\n')
-            # Si on enchaîne sur une nouvelle séquence, lancer la recherche de séquence codante et le comptage puis réinitialiser SQ
-        elif line[0] == ">" and isseq == True:
-            dict_seq[name] = seq.upper()
-            name = line
-            seq = ''
-            # Si on tombe sur une ligne vide alors traiter la séquence et réinitialiser isseq
-        elif line[0] == "" and isseq == True:
-            dict_seq[name] = seq.upper()
-            isseq = False
-    if isseq == True:
-        dict_seq[name] = seq.upper()
-        isseq = False
-            #Si on arrive à la fin du fichier et que l'on a une séquence en attente, traiter la séquence.
-    f.close()
-
-def parseMultiFASTA(fasta):
-    ''' Exrait les séquences nucléotidiques d'un fichier (multi)FASTA et les stocke dans un dictionnaire global dict_seq '''
+    :parm fasta: name of the file to read
+    :type fasta: string
+    :return: None
+    :rtype: Nonetype
+    '''
 
     file = open(fasta, "r")
 
@@ -160,12 +81,21 @@ def parseMultiFASTA(fasta):
         else:
             dict_seq[seq_actuel] += line[:-1]
 
+    file.close()
+
 ##############################################################################################
-## Restrict
+## RESTRICT
 ##############################################################################################
 
 def reverse_dna(sequence):
-    ''' Retourne le brin complémentaire du brin d'adn donne '''
+    ''' 
+    Return the cDNA of the given sequence
+
+    :parm sequence: Sequence nucléotidique
+    :type sequence: string
+    :return: cDNA
+    :rtype: string 
+    '''
     
     sequence_reverse = ""
     for nt in sequence.upper():
@@ -181,7 +111,18 @@ def reverse_dna(sequence):
 
 
 def restrict_search(dict_enz, sequence, size_restriction_site=4):
-    '''recherche les site de restriction dans la sequence donnee'''
+    ''' 
+    Find the restriction site in the sequence
+
+    :parm sequence: DNA sequence
+    :type sequence: string
+    :parm dict_enz: Dictionary of restriction enzyme with their names as keys and their characteristics as value in a list
+    :type dict_enz: dict
+    :parm size_restriction_site: minimum recognition size to be take in account
+    :type size_restriction_site: int
+    :return: list of hit
+    :rtype: list
+    '''
 
     # Initiation valeurs
     lresult =[]
@@ -190,9 +131,10 @@ def restrict_search(dict_enz, sequence, size_restriction_site=4):
 
     # Lève un attribute error si size n'est pas >= à 1 
     if size_restriction_site < 1:
+        print("size_restriction_site should be >= 1")
         raise AttributeError
     
-    # prend sequence et en fait une liste contenant le 5'3' et 3'5'
+    # Prend sequence et en fait une liste contenant le 5'3' et 3'5'
     lseq.append(sequence.upper()) # Attribue la sequence dans une liste
     lseq.append(reverse_dna(lseq[0])) # Ajoute le brin complementaire à la liste
 
@@ -217,7 +159,18 @@ def restrict_search(dict_enz, sequence, size_restriction_site=4):
     return lresult
 
 def sortrestrict(lresult, reverse, tri_alphabetique):
-    ''' Tri les enzymes par position de hit croissante par défaut, peut-être triee par ordre alphabetique et en ordre decroissant '''
+    ''' 
+    Sort result by position of hit or by alphabetical order
+
+    :parm lresult: List of result of search restrict
+    :type lresult: list
+    :parm reverse: Sort the hit in reverse order 
+    :type reverse: Booleen
+    :parm tri_alphabetique: sort the result b alphabetical order
+    :type tri_alphabetique: Booleen
+    :return: list of hit
+    :treturn: list
+    '''
 
     if tri_alphabetique == True:
         tri_alphabetique = 2
@@ -228,7 +181,14 @@ def sortrestrict(lresult, reverse, tri_alphabetique):
     return result_sorted
 
 def count_hit(lresult):
-    ''' Verifie le nombre de hit trouve par restrict.py '''
+    ''' 
+    Count the number of hit by sequence
+
+    :parm lresult: list of hit found by restrictsearch
+    :type lresult: list
+    :return: number of hit
+    :rtype: int
+    '''
 
     compteur = 0
     for hit in lresult:
@@ -236,7 +196,17 @@ def count_hit(lresult):
     return compteur
 
 def save_restrict(dict_result, outputfile):
-    ''' Enregistre le resultat dans un fichier '''
+    '''
+    Save the result of restrict search in a file, can save result of 
+    different sequence in one file
+
+    :parm dict_result: dictionary of result found by restrictsearch in multiple (or not) sequence
+    :type dic_result: dict
+    :parm outputfile: Where save the result
+    :type outputfile: string
+    :return: None
+    :rtype: NoneType
+    '''
 
     fichier = open(outputfile, 'w')
     for key in dict_result:
@@ -248,11 +218,11 @@ def save_restrict(dict_result, outputfile):
         fichier.write("# nb_hit : " + str(nb_hit) + "\n")
         fichier.write("#"*60 + "\n" + "Start  End  Enzyme  Restriction site  Strand" + "\n")
         for hit in result_sorted:
-            fichier.write(str(hit[0]) + ",  " + str(hit[1]) + ",    " + str(hit[2]) + ",    " + str(hit[3].upper()) + ",    " + hit[4] + "\n")
+            fichier.write(str(hit[0]) + ",     " + str(hit[1]) + ",  " + str(hit[2]) + ",        " + str(hit[3].upper()) + ",    " + hit[4] + "\n")
 
 
 ##############################################################################################
-## Cusp
+## CUSP
 ##############################################################################################
 
 def codante(seq):
@@ -311,9 +281,9 @@ def usage():
     for codon in codon_nbr:
         codon_nbr[codon] = int(codon_nbr[codon])
 
-def impression_cusp():
+def impression_cusp(outputfile):
     ''' Présente les résultats sous la forme d'un fichier struturé .cusp '''
-    fo=open("output.cusp",'w')
+    fo=open(outputfile,'w')
     fo.write('#CdsCount:%i' %nb_SQ + '\n')
     fo.write('\n')
     fo.write("#Coding GC %.2f" % pGC+"%\n")
@@ -333,10 +303,89 @@ def impression_cusp():
 
 if __name__ == '__main__':
 
+    parser = argparse.ArgumentParser(description="Restrict report position of restriction site on a DNA sequence, by printing it by default, and sorted by hit postion")
+    parser.add_argument("sequence", nargs="+", type=str, help="Nucleotide sequence in a embl format")
+    parser.add_argument("-e", "--enzyme", type=str, help="Use Restrict program, need the restriction enzymes in a file in the 37e emboss format")
+    parser.add_argument("-o", "--outputfile", help="The outputfile to use other than default (*_output.cusp/restrict)")
+    parser.add_argument("-a", "--alphabetic_sort", action="store_true", help="Sort the result by alphabetique order of the enzymes name")
+    parser.add_argument("-r", "--reverse_sort", action="store_true", help="Reverse the order of result")
+    parser.add_argument("-s", "--size", default=4, type=int, help="Minimum recognition site length (default=4)")
+    args = parser.parse_args()
+    
+
+    IUPAC_dna = {'A':'A', 'T':'T', 'G':'G', 'C':'C', 'R':'AG', 'M':'AC', 
+                'W':'AT', 'Y':'CT', 'S':'CG', 'K':'GT', 'V':'ACG', 
+                'H':'ACT', 'D':'AGT', 'B':'CGT', 'N':'AGCT'}
+
+    ordre_code=['GCA', 'GCC', 'GCG', 'GCT', 'TGC', 'TGT', 'GAC', 'GAT', \
+    'GAA', 'GAG', 'TTC', 'TTT', 'GGA', 'GGC', 'GGG', 'GGT', 'CAC', 'CAT', \
+    'ATA', 'ATC', 'ATT', 'AAA', 'AAG', 'CTA', 'CTC', 'CTG', 'CTT', 'TTA', \
+    'TTG', 'ATG', 'AAC', 'AAT', 'CCA', 'CCC', 'CCG', 'CCT', 'CAA', 'CAG', \
+    'AGA', 'AGG', 'CGA', 'CGC', 'CGG', 'CGT', 'AGC', 'AGT', 'TCA', 'TCC', \
+    'TCG', 'TCT', 'ACA', 'ACC', 'ACG', 'ACT', 'GTA', 'GTC', 'GTG', 'GTT', \
+    'TGG', 'TAC', 'TAT', 'TAA', 'TAG', 'TGA']
+
+    code = {'GCA': 'A', 'GCC': 'A', 'GCG': 'A', 'GCT': 'A', \
+    'TGC': 'C', 'TGT': 'C', \
+    'GAC': 'D', 'GAT': 'D', \
+    'GAA': 'E', 'GAG': 'E', \
+    'TTC': 'F', 'TTT': 'F', \
+    'GGA': 'G', 'GGC': 'G', 'GGG': 'G', 'GGT': 'G', \
+    'CAC': 'H', 'CAT': 'H', \
+    'ATA': 'I', 'ATC': 'I', 'ATT': 'I', \
+    'AAA': 'K', 'AAG': 'K', \
+    'CTA': 'L', 'CTC': 'L', 'CTG': 'L', 'CTT': 'L', 'TTA': 'L', 'TTG': 'L', \
+    'ATG': 'M', \
+    'AAC': 'N', 'AAT': 'N', \
+    'CCA': 'P', 'CCC': 'P', 'CCG': 'P', 'CCT': 'P', \
+    'CAA': 'Q', 'CAG': 'Q', \
+    'AGA': 'R', 'AGG': 'R', 'CGA': 'R', 'CGC': 'R', 'CGG': 'R', 'CGT': 'R', \
+    'AGC': 'S', 'AGT': 'S', 'TCA': 'S', 'TCC': 'S', 'TCG': 'S', 'TCT': 'S', \
+    'ACA': 'T', 'ACC': 'T', 'ACG': 'T', 'ACT': 'T', \
+    'GTA': 'V', 'GTC': 'V', 'GTG': 'V', 'GTT': 'V', \
+    'TGG': 'W', \
+    'TAC': 'Y', 'TAT': 'Y', \
+    'TAA': '*', 'TAG': '*', 'TGA': '*'}
+
+    codon_nbr = {'GCA': 0, 'GCC': 0, 'GCG': 0, 'GCT': 0, \
+    'TGC': 0, 'TGT': 0, \
+    'GAC': 0, 'GAT': 0, \
+    'GAA': 0, 'GAG': 0, \
+    'TTC': 0, 'TTT': 0, \
+    'GGA': 0, 'GGC': 0, 'GGG': 0, 'GGT': 0, \
+    'CAC': 0, 'CAT': 0, \
+    'ATA': 0, 'ATC': 0, 'ATT': 0, \
+    'AAA': 0, 'AAG': 0, \
+    'CTA': 0, 'CTC': 0, 'CTG': 0, 'CTT': 0, 'TTA': 0, 'TTG': 0, \
+    'ATG': 0, \
+    'AAC': 0, 'AAT': 0, \
+    'CCA': 0, 'CCC': 0, 'CCG': 0, 'CCT': 0, \
+    'CAA': 0, 'CAG': 0, \
+    'AGA': 0, 'AGG': 0, 'CGA': 0, 'CGC': 0, 'CGG': 0, 'CGT': 0, \
+    'AGC': 0, 'AGT': 0, 'TCA': 0, 'TCC': 0, 'TCG': 0, 'TCT': 0, \
+    'ACA': 0, 'ACC': 0, 'ACG': 0, 'ACT': 0, \
+    'GTA': 0, 'GTC': 0, 'GTG': 0, 'GTT': 0, \
+    'TGG': 0, \
+    'TAC': 0, 'TAT': 0, \
+    'TAA': 0, 'TAG': 0, 'TGA': 0}
+
+
+    AA_nbr = {'A': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, \
+    'G': 0, 'H': 0, 'I': 0, 'K': 0, 'L': 0, \
+    'M': 0, 'N': 0, 'P': 0, 'Q': 0, 'R': 0, \
+    'S': 0, 'T': 0, 'V': 0, 'W': 0, 'Y': 0, \
+    '*': 0}
+    
+    nb_SQ, taille_SQ, GC, GC1, GC2, GC3, pGC, pGC1, pGC2, pGC3 = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    codon_fraction, codon_frequence, dict_seq, dict_enz, dict_result = {}, {}, {}, {}, {}
+
+
+
+    ##Ouverture des séquences et stockage dans un dictionnaire global, determine si il s'agit d'un fichier
     for seq in args.sequence:
-        if re.search("[^.]\.[fa|fasta]", seq) != None:
-            parseMultiFASTA(seq)
-        elif re.search("[^.]\.embl", seq) != None:
+        if re.search("[fa|fasta]$", seq) != None:
+            parse_FASTA(seq)
+        elif re.search("embl$", seq) != None:
             parse_EMBL(seq)
 
     if args.enzyme != None:
@@ -347,13 +396,13 @@ if __name__ == '__main__':
             seq = dict_seq[key] # S'en sert pour obtenir la sequence
             result = restrict_search(dict_enz, seq, args.size) # Cherche les sites de restriction
             result_sorted = sortrestrict(result, args.reverse_sort, args.alphabetic_sort) # Les tris
-            dict_result[key] = result_sorted
+            dict_result[key] = result_sorted # Place le résultat dans un dictionnaire global
 
         ## Enregistrement des resultats
-        if args.outputfile != None:
+        if args.outputfile != None: # Là où a defini l'utilisateur
             save_restrict(dict_result, args.outputfile)
-        else:
-            out = args.sequence[0] + ".restrict"
+        else: # Par défaut dans *.restrict
+            out = re.sub("[^.]*$", "", args.sequence[0]) + "restrict"
             save_restrict(dict_result, out)
 
     elif args.enzyme == None and args.alphabetic_sort != False or args.reverse_sort != False or args.size != 4:
@@ -364,5 +413,10 @@ if __name__ == '__main__':
             seq_codante = codante(dict_seq[seq])
             comptage(seq_codante)
         usage()
-        impression_cusp()
 
+        ## Enregistrement des resultats
+        if args.outputfile != None: # Là où a defini l'utilisateur
+            impression_cusp(args.outputfile)
+        else: # Par défaut dans *.restrict
+            out = re.sub("[^.]*$", "", args.sequence[0]) + "cusp"
+            impression_cusp(out)
