@@ -1,0 +1,287 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fusion module &#8212; Fusion_Emboss_BALDACHINO_ZWEIG 0.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fusion">
+<span id="fusion-module"></span><h1>fusion module<a class="headerlink" href="#module-fusion" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="fusion.codante">
+<code class="descclassname">fusion.</code><code class="descname">codante</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.codante" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an ORF from the DNA sequence given == 
+Retourne une séquence codante à partir d’une séquence donnée ?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm seq:</th><td class="field-body">A DNA sequence</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.comptage">
+<code class="descclassname">fusion.</code><code class="descname">comptage</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.comptage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the different parameters in the given sequence.
+Compte différents paramètres dans la séquence donnée.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.count_hit">
+<code class="descclassname">fusion.</code><code class="descname">count_hit</code><span class="sig-paren">(</span><em>lresult</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.count_hit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the number of hit by sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm lresult:</th><td class="field-body">list of hit found by restrictsearch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">number of hit</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.impression_cusp">
+<code class="descclassname">fusion.</code><code class="descname">impression_cusp</code><span class="sig-paren">(</span><em>outputfile</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.impression_cusp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the result of cusp in a table in the outputfile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Parm outputfile:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">where save the file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.parse_EMBL">
+<code class="descclassname">fusion.</code><code class="descname">parse_EMBL</code><span class="sig-paren">(</span><em>embl_file</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.parse_EMBL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a embl file, extract the DNA sequence and stock it in a global dictionary 
+with it’s id as key and the sequence as value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm embl_file:</th><td class="field-body">name of the file to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.parse_Emboss">
+<code class="descclassname">fusion.</code><code class="descname">parse_Emboss</code><span class="sig-paren">(</span><em>emboss_file</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.parse_Emboss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a emboss file and stock the information about restriction enzyme in a 
+global dictionary with name of enzyme as key and a list of characteristics 
+as values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Parm emboss_file:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">name of the file to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.parse_FASTA">
+<code class="descclassname">fusion.</code><code class="descname">parse_FASTA</code><span class="sig-paren">(</span><em>fasta</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.parse_FASTA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a fasta file, extract the DNA sequence and stock it in a global dictionary 
+with it’s id as key and the sequence as value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm fasta:</th><td class="field-body">name of the file to read</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.restrict_search">
+<code class="descclassname">fusion.</code><code class="descname">restrict_search</code><span class="sig-paren">(</span><em>dict_enz</em>, <em>sequence</em>, <em>size_restriction_site=4</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.restrict_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the restriction site in the sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm sequence:</th><td class="field-body">DNA sequence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parm dict_enz:</th><td class="field-body">Dictionary of restriction enzyme with their names as keys and their characteristics as value in a list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Parm size_restriction_site:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">minimum recognition size to be take in account</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of hit</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.reverse_dna">
+<code class="descclassname">fusion.</code><code class="descname">reverse_dna</code><span class="sig-paren">(</span><em>sequence</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.reverse_dna" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cDNA of the given sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm sequence:</th><td class="field-body">Sequence nucléotidique</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">cDNA</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.save_restrict">
+<code class="descclassname">fusion.</code><code class="descname">save_restrict</code><span class="sig-paren">(</span><em>dict_result</em>, <em>outputfile</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.save_restrict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the result of restrict search in a file, can save result of 
+different sequence in one file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Parm dict_result:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">dictionary of result found by restrictsearch in multiple (or not) sequence</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Parm outputfile:</th></tr>
+<tr class="field-even field"><td>&#160;</td><td class="field-body">Where save the result</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.sortrestrict">
+<code class="descclassname">fusion.</code><code class="descname">sortrestrict</code><span class="sig-paren">(</span><em>lresult</em>, <em>reverse</em>, <em>tri_alphabetique</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.sortrestrict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort result by position of hit or by alphabetical order</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm lresult:</th><td class="field-body">List of result of search restrict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parm reverse:</th><td class="field-body">Sort the hit in reverse order</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Parm tri_alphabetique:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">sort the result b alphabetical order</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of hit</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Treturn:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fusion.usage">
+<code class="descclassname">fusion.</code><code class="descname">usage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fusion.usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Codon usage and percentages in GC.
+Calcule l’usage du code et les pourcentages de GC</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, BALDACHINO_ZWEIG.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/fusion.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
