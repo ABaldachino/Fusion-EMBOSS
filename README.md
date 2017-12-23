@@ -11,9 +11,11 @@ If working on spliced genes, you may consider to give the mature-RNA sequences a
 ```{bash}
 python3 fusion.py sequence.fa (sequence2.fa, ...)
 ```
-Obtention of the restriction site, option of  
+Obtention of an output file indicating each restriction site of the enzymes in the enzymes file, who are find in the sequence(s).
+Accepted formats for sequence are: (Multi)FASTA (.fasta/.fa) and EMBL (.embl). By default the script don't take in count the restriction site < 4, you can change that with the -s option
+
 ```{bash}
-python3 fusion.py sequence.fa -e enz.txt
+python3 fusion.py sequence.fa (sequence2.fa, ...) -e enz.txt
 ```
 ## Motivation
 For our Master degree in Bioinformatics, we had to merge two individually written scripts, and we decided to do it on git for training. 
