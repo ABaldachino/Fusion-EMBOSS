@@ -450,7 +450,7 @@ if __name__ == '__main__':
 
         ## Enregistrement des resultats
         if args.outputfile != None: # Là où a defini l'utilisateur
-            save_restrict(dict_result, args.outputfile)
+            save_restrict(dict_result, args.outputfile + ".restrict")
         else: # Par défaut dans *.restrict
             out = re.sub("[^.]*$", "", args.sequence[0]) + "restrict"
             save_restrict(dict_result, out)
@@ -466,7 +466,7 @@ if __name__ == '__main__':
 
         ## Enregistrement des resultats
         if args.outputfile != None: # Là où a defini l'utilisateur
-            impression_cusp(args.outputfile)
+            impression_cusp(args.outputfile + ".cusp")
         else: # Par défaut dans *.restrict
             out = re.sub("[^.]*$", "", args.sequence[0]) + "cusp"
             impression_cusp(out)
