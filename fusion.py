@@ -108,7 +108,7 @@ def reverse_dna(sequence):
 
 def restrict_search(dict_enz, sequence, size_restriction_site=4):
     ''' 
-    Find the restriction site in the sequence
+    Find the restriction site in the sequence using all the enzyme given in the dict_enz
 
     :parm sequence: DNA sequence
     :type sequence: string
@@ -204,7 +204,7 @@ def save_restrict(dict_result, outputfile):
     '''
 
     fichier = open(outputfile, 'w')
-    for key in dict_result:
+    for key in dict_result: # Prends les résultats par séquence 
         lresult = dict_result[key]
         
         nb_hit = count_hit(lresult)
@@ -222,8 +222,7 @@ def save_restrict(dict_result, outputfile):
 
 def codante(seq):
     ''' 
-    Return an ORF from the DNA sequence given == 
-    Retourne une séquence codante à partir d'une séquence donnée ?
+    Return an ORF from the DNA sequence given
 
     :parm seq: A DNA sequence
     :type seq: string
@@ -248,8 +247,12 @@ def codante(seq):
     return seq
 
 def comptage(seq):
-    '''Counts the different parameters in the given sequence.
-    Compte différents paramètres dans la séquence donnée.'''
+    '''
+    Counts the different parameters in the given sequence.
+
+    :parm seq: DNA sequence
+    :type seq: string
+    '''
 
     global nb_SQ, taille_SQ, GC, GC1, GC2, GC3
     # Ajoute 1 au nombre de séquences analysées.
@@ -281,8 +284,9 @@ def comptage(seq):
         AA_nbr[code[codon]] = AA_nbr[code[codon]]+1
 
 def usage():
-    '''Calculate the Codon usage and percentages in GC.
-    Calcule l'usage du code et les pourcentages de GC '''
+    '''
+    Calculate the Codon usage and percentages in GC.
+    '''
 
     # Calcul des pourcentages en GC.
     # Calculation of GC percentages.

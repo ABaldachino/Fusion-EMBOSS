@@ -43,13 +43,29 @@
 <dl class="function">
 <dt id="fusion.codante">
 <code class="descclassname">fusion.</code><code class="descname">codante</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.codante" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retourne une séquence codante à partir d’une séquence donnée</p>
+<dd><p>Return an ORF from the DNA sequence given</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm seq:</th><td class="field-body">A DNA sequence</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="fusion.comptage">
 <code class="descclassname">fusion.</code><code class="descname">comptage</code><span class="sig-paren">(</span><em>seq</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.comptage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compte différents paramètres dans la séquence donnée</p>
+<dd><p>Counts the different parameters in the given sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parm seq:</th><td class="field-body">DNA sequence</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -73,7 +89,16 @@
 <dl class="function">
 <dt id="fusion.impression_cusp">
 <code class="descclassname">fusion.</code><code class="descname">impression_cusp</code><span class="sig-paren">(</span><em>outputfile</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.impression_cusp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Présente les résultats sous la forme d’un fichier struturé .cusp</p>
+<dd><p>Save the result of cusp in a table in the outputfile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Parm outputfile:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">where save the file</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -132,7 +157,7 @@ with it’s id as key and the sequence as value.</p>
 <dl class="function">
 <dt id="fusion.restrict_search">
 <code class="descclassname">fusion.</code><code class="descname">restrict_search</code><span class="sig-paren">(</span><em>dict_enz</em>, <em>sequence</em>, <em>size_restriction_site=4</em><span class="sig-paren">)</span><a class="headerlink" href="#fusion.restrict_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the restriction site in the sequence</p>
+<dd><p>Find the restriction site in the sequence using all the enzyme given in the dict_enz</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -217,7 +242,7 @@ different sequence in one file</p>
 <dl class="function">
 <dt id="fusion.usage">
 <code class="descclassname">fusion.</code><code class="descname">usage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fusion.usage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calcule l’usage du code et les pourcentages de GC</p>
+<dd><p>Calculate the Codon usage and percentages in GC.</p>
 </dd></dl>
 
 </div>
